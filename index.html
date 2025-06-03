@@ -86,22 +86,131 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "ff0884a13a754068a449438606614f24",
+      application: "lab9"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  <script>
+    class SillyError extends Error {
+      constructor(message) {
+        super(message); // (1)
+        this.name = "SillyError"; // (2)
+      }
+    }
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try{
+        let output = document.querySelector('output');
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+        if(secondNum == '0' && operator == '/'){
+          throw new Error('Divide By Zero Not Allowed');
+        }
+        if(firstNum == 'Srideep' && secondNum == 'Dornala'){
+          throw new SillyError('This is a calculator, not a name input.');
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (err){
+        console.error('Caught Error: ' + err);
+      } finally{
+        console.log('Form submitted.');
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    errorBtns[0].addEventListener('click', e => {
+      console.log('console log example');
+    })
+    errorBtns[1].addEventListener('click', e => {
+      console.error('console error example');
+    })
+    errorBtns[2].addEventListener('click', e => {
+      console.count('count incremented');
+    })
+    errorBtns[3].addEventListener('click', e => {
+      console.warn('console warn demo');
+    })
+    errorBtns[4].addEventListener('click', e => {
+      const x = 5;
+      const y = 3;
+      const reason = 'x is expected to be less than y';
+      console.assert(x < y, {x, y, reason});
+    })
+    errorBtns[5].addEventListener('click', e => {
+      console.clear();
+    })
+    errorBtns[6].addEventListener('click', e => {
+      console.dir(document.head);
+    })
+    errorBtns[7].addEventListener('click', e => {
+      console.dirxml(document.head);
+    })
+    errorBtns[8].addEventListener('click', e => {
+      const label = 'Adolescent Irradiated Espionage Tortoises';
+      console.group(label);
+      console.info('Leo');
+      console.info('Mike');
+      console.info('Don');
+    })
+    errorBtns[9].addEventListener('click', e => {
+      const label = 'Adolescent Irradiated Espionage Tortoises';
+      console.groupEnd(label);
+      console.log('group ended');
+    })
+    errorBtns[10].addEventListener('click', e => {
+      var people = [
+        {
+          first: 'Srideep',
+          last: 'Dornala',
+        },
+        {
+          first: 'Thomas',
+          last: 'Powell',
+        },
+        {
+          first: 'Pradeep',
+          last: 'Khosla',
+        }
+      ];
+      console.table(people);
+    })
+    errorBtns[11].addEventListener("click", e => {
+      console.time();
+      console.log('timer started');
+    });
+    errorBtns[12].addEventListener("click", e => {
+      console.timeEnd();
+    });
+
+    const first = () => { second(); };
+    const second = () => { third(); };
+    const third = () => { fourth(); };
+    const fourth = () => { console.trace(); };
+    errorBtns[13].addEventListener("click", e => {
+      first();
+    });
+
+    errorBtns[14].addEventListener("click", e => {
+      boom; //supposed to error
+    });
+
+    window.onerror = function(message, url, line, column, err) {
+        console.log('global error found on line ' + line + ': '+ message);
+    };
+
+    TrackJS.track('Testing TrackJS!');
+
   </script>
 </body>
 
